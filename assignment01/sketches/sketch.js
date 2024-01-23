@@ -1,3 +1,4 @@
+// variables created to enable sketching all images to the same page
 var firstBuffer;
 var secondBuffer;
 var thirdBuffer;
