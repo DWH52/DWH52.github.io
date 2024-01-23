@@ -43,6 +43,8 @@ function drawSecondBuffer()
 {
     //Example 2
     secondBuffer.noStroke();
+    
+    // Circles made with equal but less than %100 alpha values to create translucent blending
     secondBuffer.fill(255, 182, 193, 127);
     secondBuffer.ellipse(100,75,100,100);
     
@@ -62,7 +64,7 @@ function drawThirdBuffer()
     thirdBuffer.rectMode(CENTER);
     thirdBuffer.noStroke();
 
-    //pacman
+    //pacman -- alternatively could use arc(), hindsight.
     thirdBuffer.fill('yellow');
     thirdBuffer.ellipse(75,75,100,100);
     thirdBuffer.fill('black');
@@ -85,11 +87,13 @@ function drawThirdBuffer()
 function drawFourthBuffer()
 {
     //Example 4
+    // Setup image theme (background and stroke weight & color)
     fourthBuffer.background('blue');
     fourthBuffer.rectMode(CENTER);
-
     fourthBuffer.stroke('white');
     fourthBuffer.strokeWeight(3);
+    
+    //Creation of Green Circle
     fourthBuffer.fill('green');
     fourthBuffer.ellipse(150,150,150,150);
 
