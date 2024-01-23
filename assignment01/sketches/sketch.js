@@ -44,6 +44,7 @@ function drawSecondBuffer()
 {
     //Example 2
     secondBuffer.noStroke();
+    secondBuffer.blendMode(MULTIPLY);
     
     // Circles made with equal but less than %100 alpha values to create translucent blending
     secondBuffer.fill(255, 182, 193, 127);
