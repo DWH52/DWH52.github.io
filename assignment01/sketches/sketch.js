@@ -1,3 +1,4 @@
+// variables created to enable sketching all images to the same page
 var firstBuffer;
 var secondBuffer;
 var thirdBuffer;
@@ -43,13 +44,16 @@ function drawSecondBuffer()
 {
     //Example 2
     secondBuffer.noStroke();
-    secondBuffer.fill(255, 182, 193, 127);
+    secondBuffer.blendMode(ADD);
+    
+    // Circles made with equal but less than %100 alpha values to create translucent blending
+    secondBuffer.fill(255, 182, 193, 100);
     secondBuffer.ellipse(100,75,100,100);
     
-    secondBuffer.fill(152, 251, 152, 127);
+    secondBuffer.fill(152, 251, 152, 100);
     secondBuffer.ellipse(125,125,100,100);
     
-    secondBuffer.fill(123, 104, 238, 127);
+    secondBuffer.fill(123, 104, 238, 100);
     secondBuffer.ellipse(75,125,100,100);
 }
 
@@ -62,7 +66,7 @@ function drawThirdBuffer()
     thirdBuffer.rectMode(CENTER);
     thirdBuffer.noStroke();
 
-    //pacman
+    //pacman -- alternatively could use arc(), hindsight.
     thirdBuffer.fill('yellow');
     thirdBuffer.ellipse(75,75,100,100);
     thirdBuffer.fill('black');
@@ -85,11 +89,13 @@ function drawThirdBuffer()
 function drawFourthBuffer()
 {
     //Example 4
+    // Setup image theme (background and stroke weight & color)
     fourthBuffer.background('blue');
     fourthBuffer.rectMode(CENTER);
-
     fourthBuffer.stroke('white');
     fourthBuffer.strokeWeight(3);
+    
+    //Creation of Green Circle
     fourthBuffer.fill('green');
     fourthBuffer.ellipse(150,150,150,150);
 
