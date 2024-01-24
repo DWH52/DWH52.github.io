@@ -46,13 +46,13 @@ function drawSecondBuffer()
     secondBuffer.noStroke();
     
     // Circles made with equal but less than %100 alpha values to create translucent blending
-    secondBuffer.fill(255, 182, 193, 100);
+    secondBuffer.fill(255, 182, 193, 127);
     secondBuffer.ellipse(100,75,100,100);
     
-    secondBuffer.fill(152, 251, 152, 100);
+    secondBuffer.fill(152, 251, 152, 127);
     secondBuffer.ellipse(125,125,100,100);
     
-    secondBuffer.fill(123, 104, 238, 100);
+    secondBuffer.fill(123, 104, 238, 127);
     secondBuffer.ellipse(75,125,100,100);
 }
 
