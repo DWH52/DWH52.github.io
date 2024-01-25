@@ -18,7 +18,7 @@ function preload()
 
 function setup() 
 {
-  createCanvas(width, height);
+  createCanvas(displayWidth, displayHeight);
   imageMode(CENTER);
   // Random coordinates with constraints so that the sprites do not
   // load off the display area.
