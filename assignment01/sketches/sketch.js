@@ -43,17 +43,15 @@ function drawFirstBuffer()
 function drawSecondBuffer()
 {
     //Example 2
+    secondBuffer.background('white')
     secondBuffer.noStroke();
-    secondBuffer.blendMode(ADD);
-    
-    // Circles made with equal but less than %100 alpha values to create translucent blending
-    secondBuffer.fill(255, 182, 193, 100);
+    secondBuffer.fill(255, 0, 0, 127);
     secondBuffer.ellipse(100,75,100,100);
     
-    secondBuffer.fill(152, 251, 152, 100);
+    secondBuffer.fill(0, 255, 0, 127);
     secondBuffer.ellipse(125,125,100,100);
     
-    secondBuffer.fill(123, 104, 238, 100);
+    secondBuffer.fill(0, 0, 255, 127);
     secondBuffer.ellipse(75,125,100,100);
 }
 
