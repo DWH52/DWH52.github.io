@@ -1,6 +1,7 @@
 let spriteSheets = [];
 let spriteAnimation = [];
 
+let numberOfAnimations = 5;
 
 function preload()
 {
@@ -14,39 +15,53 @@ function setup()
   imageMode(CENTER);
   angleMode(DEGREES);
   
-
-  spriteAnimation[0] = new SpriteMovementAnimation(spriteSheets[0],32,32,8);
+  for(i = 0; i < numberOfAnimations; i++)
+  {
+    spriteAnimation[i] = new SpriteMovementAnimation(spriteSheets[0],32,32,8, random([1,4]));
+  }
 }
 
 function draw() 
 {
   background(220);
-  spriteAnimation[0].draw();
-  
+  for(i = 0; i < numberOfAnimations; i++)
+  {
+    spriteAnimation[i].draw();
+  }
 
 }
 
-function keyPressed()
+function mousePressed()
 {
-  // allow each sprite to react to key presses
-  for(i = 0; i <= 2; i++)
+  for(i = 0; i < spriteAnimation.length; i++)
   {
-    spriteAnimation[i].keyPressed();
+    let contains = spriteAnimation[i].ifContainsSprite(mouseX, mouseY);
+    if(contains)
+    {
+      spriteAnimation[i].spritesheet = spriteSheets[2];
+      spriteAnimation[i].stop();
+    }
   }
 }
 
-function keyReleased()
+
+
+class ScoreBoard
 {
-  // allow each sprite to react to key releases
-  for(i = 0; i <= 2; i++)
+  constructor()
   {
-    spriteAnimation[i].keyReleased();
+
+  }
+
+  draw()
+  {
+
   }
 }
 
 class SpriteMovementAnimation
 {
-  constructor(spritesheet, spriteWidth, spriteHeight, animationLength)
+  constructor(spritesheet, spriteWidth, spriteHeight, animationLength, speed)
   {
     this.spritesheet = spritesheet; 
     this.spriteWidth = spriteWidth;
@@ -57,8 +72,11 @@ class SpriteMovementAnimation
     this.row = 0;                                 // row of the sprite sheet to pull frame from
     this.column = 0;                              // column of the sprite sheet to pull frame from
     this.currentFrame = 0;
-    this.moving = 1;
-    this.directionMoving = 1;
+    this.direction = random([-1,1]);
+    this.moving = this.direction;
+    this.speed = speed;
+    this.up_down = random([true,false]);
+    
   }
 
   draw()
@@ -75,34 +93,59 @@ class SpriteMovementAnimation
     // Shifts the image, left or right based on the change to displayX/Y (The X and Y coordinate of the canvas)
   
     // Draws the image either facing the right or left, depending on the direction.
+    translate(this.displayX,this.displayY);
     
-    scale(this.directionMoving);
-    
-
-    image(this.spritesheet,this.displayX,this.displayY,this.spriteWidth,this.spriteHeight,this.column*this.spriteWidth,this.row*this.spriteHeight,this.spriteWidth,this.spriteHeight);
+    if(this.up_down)
+    {
+      scale(1,this.direction);
+      rotate(180);
+    }
+    else
+    {
+      scale(this.direction,1);
+      rotate(90);
+    }
+    image(this.spritesheet,0,0,this.spriteWidth,this.spriteHeight,this.column*this.spriteWidth,this.row*this.spriteHeight,this.spriteWidth,this.spriteHeight);
     pop();
     
     //Creates the flow to actual animation. Adjusting the modulo variable to be lower increases the animation rate, higher numbers reduce the animation rate.
-    if (frameCount % 12 === 0)
+    
+    if (frameCount % (32/this.speed) === 0)
     {
       this.currentFrame++;
-      
     }
   
     // Added side wall-collision so that sprites stay on the display.
-    if(this.displayX <= 10 )
+    if((this.displayX > (width - 10)) || (this.displayX < 10))
     {
-      this.moving = 0;
-      this.displayX = 11;
-      this.moving = 1;
+      this.moving *= -1;
+      this.direction *= -1; //flips the direction of movement
     }
-    if(this.displayX >= (width-10))
+    if((this.displayY > (height - 10)) || (this.displayY < 10))
     {
-      this.moving = 0;
-      this.displayX = width-11;
-      this.moving = -1;
+      this.moving *= -1;
+      this.direction *= -1; //flips the direction of movement
     }
-    this.displayX += this.moving;
+    if(this.up_down)
+    {
+      this.displayY += this.moving*this.speed;
+    }
+    else
+    {
+      this.displayX += this.moving*this.speed;
+    }
   }
 
+  ifContainsSprite(x,y)
+  {
+    let insideX = ((x >= this.displayX - this.spriteWidth / 2) && (x <= this.displayX + this.spriteWidth / 2));
+    let insideY = ((y >= this.displayY - this.spriteHeight / 2) && (y <= this.displayY + this.spriteHeight / 2));
+    return (insideX && insideY);
+  }
+
+  stop()
+  {
+    this.moving = 0;
+    this.spritesheet = spriteSheets[1];
+  }
 }
