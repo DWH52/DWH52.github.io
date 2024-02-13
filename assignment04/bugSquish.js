@@ -2,6 +2,7 @@
 let spriteSheets = [];
 let spriteAnimation = [];
 
+let gameFont;
 let numberOfAnimations;
 let timeRemaining;
 let initialSpeed = 1;
@@ -17,6 +18,7 @@ let isPaused = false;
 function preload()
 {
     spriteSheets = [loadImage("assets/Bug.png"),loadImage("assets/BugSquished.png"),loadImage("assets/BugDead.png")];
+    gameFont = loadFont("assets/PressStart2P-Regular.ttf");
 }
 
 function setup() 
@@ -26,6 +28,7 @@ function setup()
     textAlign(CENTER);
     angleMode(DEGREES);
     rectMode(CENTER);
+    textFont(gameFont);
 
     for(i = 0; i < numberOfAnimations; i++)
     {
@@ -39,11 +42,12 @@ function draw()
     {   
         background(0);
         fill(255,255,255);
+        textSize(24);
         notPlaying();
     }
     else
     {   
-        background(50,255,50);
+        background(29,132,32);
         fill(0);
         textStyle('bold');
         playing();
@@ -61,16 +65,22 @@ function playing()
         {
             spriteAnimation[i].draw();
         }
+        push();
         fill(0);
         rect((windowWidth/2),50,windowWidth,100);
         fill(255,255,255);
-        text("Score: " + score, 100, 50);
-        text("Time Remaining: " + ceil(timeRemaining), width-100,50);
+        textSize(18);
+        text("Score: " + score, (width/4), 60);
+        textSize(22);
+        text("Bug Squisher", (width/2) - 40, 60);
+        textSize(18);
+        text("Time Remaining: " + ceil(timeRemaining), width-(width/4),60);
         timeRemaining -= (deltaTime/1000);
         if(timeRemaining <= 0)
         {
             gameOver = true;
         }
+        pop();
     }
     else
     {
@@ -93,11 +103,15 @@ function notPlaying()
     }
     else
     {
-        text("Welcome to Bug Squisher!", windowWidth/2,(windowHeight/2)-100);
-        text("Click On Bugs to Squish Them. Each One Dead is a Point!", windowWidth/2,(windowHeight/2)-50);
-        text("Controls: CLICK - Squish a Bug, ESCAPE - Pause the Game.", windowWidth/2,(windowHeight/2));
-        textStyle("bold");
-        text("Press SPACEBAR to Play.", windowWidth/2,(windowHeight/2)+50);
+      push();
+      textSize(24);
+      text("Welcome to Bug Squisher!", windowWidth/2,(windowHeight/2)-100);
+      textSize(16);
+      text("Click On Bugs to Squish Them. Each One Dead is a Point!", windowWidth/2,(windowHeight/2)-50);
+      text("Controls: CLICK - Squish a Bug, ESCAPE - Pause the Game.", windowWidth/2,(windowHeight/2));
+      textStyle("bold");
+      text("Press SPACEBAR to Play.", windowWidth/2,(windowHeight/2)+50);
+      pop();
     }
 }
 //END OF GAMESTATES
