@@ -19,6 +19,18 @@ function setup()
   button1 = createButton('Rock');
   button1.position(75, 100);
   button1.mousePressed(() => soundFX.player('rock').start());
+
+  button2 = createButton('Base Drum');
+  button2.position(75, 150);
+  button2.mousePressed(()=> soundFX.player('base').start());
+
+  button3 = createButton('Electronic Snare');
+  button3.position(75,200);
+  button3.mousePressed(() => soundFX.player('eSnare').start());
+
+  button4 = createButton('Tight Snare');
+  button4.position(75,250);
+  button4.mousePressed(() => soundFX.player('tSnare').start());
 }
 
 function draw()
