@@ -1,62 +1,71 @@
-//const synth = new Tone.Synth().toDestination();
-//some changes
-function preload()
-{
-  soundFX = new Tone.Players(
-    {
-      movieBoom : "assets/sounds/CinematicBoom.wav",
-      artillery : "assets/sounds/Artillery.wav",
-      war: "assets/sounds/War.wav",
-      m16: "assets/sounds/M16.mp3",
-      breathingHeavy: "assets/sounds/HeavyBreathing.wav",
-      gulls: "assets/sounds/GullsByTheSea.wav",
-      hz700: "assets/sounds/700hz.mp3",
-    }
-  ).toDestination();
-}
+let soundFX = new Tone.Players(
+  {
+    movieBoom : "assets/sounds/CinematicBoom.wav",
+    clock : "assets/sounds/clockTick.wav",
+    rock: "assets/sounds/rockIntroTest.mp3",
+    car: "assets/sounds/car.wav",
+    schoolBell: "assets/sounds/schoolBell.wav",
+    success: "assets/sounds/success.wav",
+  }
+);
+
+
+let delaySlider;
+let delay = new Tone.FeedbackDelay("8n", 0.5);
+
+let volumeSlider;
+let volume = new Tone.Volume(0);
+//Effect Chain
+soundFX.connect(volume);
+volume.connect(delay);
+delay.toDestination();
 
 function setup() 
 {
   createCanvas(400, 400);
 
   button1 = createButton('Movie - Start Effect');
-  button1.position(75, 25);
+  button1.position(25, 25);
   button1.mousePressed(() => soundFX.player('movieBoom').start());
 
-  button2 = createButton('Artillery');
-  button2.position(75, 50);
-  button2.mousePressed(()=> soundFX.player('artillery').start());
+  button2 = createButton('Clock Ticking');
+  button2.position(25, 50);
+  button2.mousePressed(()=> soundFX.player('clock').start());
 
-  button3 = createButton('War');
-  button3.position(75,75);
-  button3.mousePressed(() => soundFX.player('war').start());
+  button3 = createButton('Car Start & Drive');
+  button3.position(25,75);
+  button3.mousePressed(() => soundFX.player('car').start());
 
-  button4 = createButton('M16 - Burst');
-  button4.position(75,100);
-  button4.mousePressed(() => soundFX.player('m16').start());
+  button4 = createButton('Rock');
+  button4.position(25,100);
+  button4.mousePressed(() => soundFX.player('rock').start());
 
-  button5 = createButton('Heavy Breathing');
-  button5.position(75,125);
-  button5.mousePressed(() => soundFX.player('breathingHeavy').start());
+  button5 = createButton('Success');
+  button5.position(25,125);
+  button5.mousePressed(() => soundFX.player('success').start());
 
-  button6 = createButton('Beach Background');
-  button6.position(75,150);
-  button6.mousePressed(() => soundFX.player('gulls').start());
-/*
-  button7 = createButton('700hz');
-  button7.position(75,175);
-  button7.mousePressed(() => soundFX.player('hz700').start());
-  */
+  button6 = createButton('School Bells');
+  button6.position(25,150);
+  button6.mousePressed(() => soundFX.player('schoolBell').start());
+
+  volumeSlider = createSlider(-20, 20, 0, 1);
+  volumeSlider.position(250, 20);
+  volumeSlider.mouseMoved(() => volume.volume.value = volumeSlider.value());
+  
+  delaySlider = createSlider(0, 1, 0, 0.05);
+  delaySlider.position(250, 50);
+  delaySlider.mouseMoved(() => delay.delayTime.value = delaySlider.value());
 }
 
 function draw()
 {
   background(220);
-  text("PTSD, an interactive experience", 100, 20);
+  text(`Volume: ${volumeSlider.value()}`, 250, 20);
+  text(`Delay: ${delaySlider.value()}`, 250, 50);
 }
 
 
-
+//const synth = new Tone.Synth().toDestination();
 /*function keyPressed() *** THIS IS FOR ASSIGNMENT 06
 {
   if( key == '1')
