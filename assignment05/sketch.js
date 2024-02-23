@@ -9,16 +9,25 @@ let soundFX = new Tone.Players(
   }
 );
 
+let volumeSlider;
+let volume = new Tone.Volume(0);
 
 let delaySlider;
 let delay = new Tone.FeedbackDelay("8n", 0.5);
 
-let volumeSlider;
-let volume = new Tone.Volume(0);
+let phaserFrequencySlider;
+let phaser = new Tone.Phaser(
+  {
+    frequency: 0,
+    octaves: 5,
+    baseFrequency: 100
+  }
+)
 //Effect Chain
 soundFX.connect(volume);
 volume.connect(delay);
-delay.toDestination();
+delay.connect(phaser);
+phaser.toDestination();
 
 function setup() 
 {
@@ -55,6 +64,10 @@ function setup()
   delaySlider = createSlider(0, 1, 0, 0.05);
   delaySlider.position(250, 50);
   delaySlider.mouseMoved(() => delay.delayTime.value = delaySlider.value());
+
+  phaserFrequencySlider = createSlider(0, 10, 0, 0.5);
+  phaserFrequencySlider.position(250, 80);
+  phaserFrequencySlider.mouseMoved(() => phaser.frequency.value = phaserFrequencySlider.value());
 }
 
 function draw()
@@ -62,6 +75,7 @@ function draw()
   background(220);
   text(`Volume: ${volumeSlider.value()}`, 250, 20);
   text(`Delay: ${delaySlider.value()}`, 250, 50);
+  text(`Phaser Frequency: ${phaserFrequencySlider.value()}`, 250, 80);
 }
 
 
