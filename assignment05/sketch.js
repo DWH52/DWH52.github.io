@@ -4,12 +4,12 @@ function preload()
 {
   soundFX = new Tone.Players(
     {
-      rock : "assets/sounds/rockIntroTest.mp3",
-      base : "assets/sounds/baseDrum.mp3",
-      eSnare: "assets/sounds/electricSnare.mp3",
-      tSnare: "assets/sounds/tightSnare.mp3",
-      hz500: "assets/sounds/500hz.mp3",
-      hz600: "assets/sounds/600hz.mp3",
+      movieBoom : "assets/sounds/CinematicBoom.wav",
+      artillery : "assets/sounds/Artillery.wav",
+      war: "assets/sounds/War.wav",
+      m16: "assets/sounds/M16.mp3",
+      breathingHeavy: "assets/sounds/HeavyBreathing.wav",
+      gulls: "assets/sounds/GullsByTheSea.wav",
       hz700: "assets/sounds/700hz.mp3",
     }
   ).toDestination();
@@ -19,30 +19,30 @@ function setup()
 {
   createCanvas(400, 400);
 
-  button1 = createButton('Rock');
+  button1 = createButton('Movie - Start Effect');
   button1.position(75, 25);
-  button1.mousePressed(() => soundFX.player('rock').start());
-/*
-  button2 = createButton('Base Drum');
+  button1.mousePressed(() => soundFX.player('movieBoom').start());
+
+  button2 = createButton('Artillery');
   button2.position(75, 50);
-  button2.mousePressed(()=> soundFX.player('base').start());
+  button2.mousePressed(()=> soundFX.player('artillery').start());
 
-  button3 = createButton('Electronic Snare');
+  button3 = createButton('War');
   button3.position(75,75);
-  button3.mousePressed(() => soundFX.player('eSnare').start());
+  button3.mousePressed(() => soundFX.player('war').start());
 
-  button4 = createButton('Tight Snare');
+  button4 = createButton('M16 - Burst');
   button4.position(75,100);
-  button4.mousePressed(() => soundFX.player('tSnare').start());
+  button4.mousePressed(() => soundFX.player('m16').start());
 
-  button5 = createButton('500hz');
+  button5 = createButton('Heavy Breathing');
   button5.position(75,125);
-  button5.mousePressed(() => soundFX.player('hz500').start());
+  button5.mousePressed(() => soundFX.player('breathingHeavy').start());
 
-  button6 = createButton('600hz');
+  button6 = createButton('Beach Background');
   button6.position(75,150);
-  button6.mousePressed(() => soundFX.player('hz600').start());
-
+  button6.mousePressed(() => soundFX.player('gulls').start());
+/*
   button7 = createButton('700hz');
   button7.position(75,175);
   button7.mousePressed(() => soundFX.player('hz700').start());
@@ -52,6 +52,7 @@ function setup()
 function draw()
 {
   background(220);
+  text("PTSD, an interactive experience", 100, 20);
 }
 
 
