@@ -12,8 +12,9 @@ let soundFX = new Tone.Players(
 let volumeSlider;
 let volume = new Tone.Volume(0);
 
-let delaySlider;
-let delay = new Tone.FeedbackDelay("8n", 0.5);
+let delayNote = [0,"1n","2n","4n","8n","16n"]
+let delayTempoSlider;
+let delay = new Tone.FeedbackDelay(delayNote[0], 0);
 
 let phaserFrequencySlider;
 let phaser = new Tone.Phaser(
@@ -60,13 +61,17 @@ function setup()
   volumeSlider = createSlider(-20, 20, 0, 1);
   volumeSlider.position(250, 20);
   volumeSlider.mouseMoved(() => volume.volume.value = volumeSlider.value());
-  
-  delaySlider = createSlider(0, 1, 0, 0.05);
+
+  delaySlider = createSlider(0, 1, 0, 0.2);
   delaySlider.position(250, 50);
-  delaySlider.mouseMoved(() => delay.delayTime.value = delaySlider.value());
+  delaySlider.mouseMoved(() => delay.feedback.value = delaySlider.value());
+  
+  delayTempoSlider = createSlider(0, 5, 0, 1);
+  delayTempoSlider.position(250, 80);
+  delayTempoSlider.mouseMoved(() => delay.delayTime.value = delayNote[delayTempoSlider.value()]);
 
   phaserFrequencySlider = createSlider(0, 10, 0, 0.5);
-  phaserFrequencySlider.position(250, 80);
+  phaserFrequencySlider.position(250, 110);
   phaserFrequencySlider.mouseMoved(() => phaser.frequency.value = phaserFrequencySlider.value());
 }
 
@@ -75,7 +80,8 @@ function draw()
   background(220);
   text(`Volume: ${volumeSlider.value()}`, 250, 20);
   text(`Delay: ${delaySlider.value()}`, 250, 50);
-  text(`Phaser Frequency: ${phaserFrequencySlider.value()}`, 250, 80);
+  text(`Delay Tempo: ${delayNote[delayTempoSlider.value()]}`, 250, 80);
+  text(`Phaser Frequency: ${phaserFrequencySlider.value()}`, 250, 110);
 }
 
 
