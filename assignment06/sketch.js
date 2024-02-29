@@ -68,7 +68,7 @@ function draw()
   text(`Volume: ${volumeSlider.value()}`, width*(3/4), height-100);
   text(`Pitch: ${octave[pitchSlider.value()+12]}`, width*(3/4), height-50);
   selectedOctave = octave[pitchSlider.value()+12];
-  notes = [`A${selectedOctave}`, "B3", "C4", "D4", "E4", "F4", "G4", "A4"]
+  notes = [`A${selectedOctave - 1}`, "B3", "C4", "D4", "E4", "F4", "G4", "A4"]
   
 }
 
