@@ -11,6 +11,8 @@ let octave = {
   24 : 5,
 }
 
+let selectedOctave;
+
 let instrumentSelect;
 
 let volumeSlider;
@@ -65,6 +67,8 @@ function draw()
 
   text(`Volume: ${volumeSlider.value()}`, width*(3/4), height-100);
   text(`Pitch: ${octave[pitchSlider.value()+12]}`, width*(3/4), height-50);
+  selectedOctave = octave[pitchSlider.value()+12];
+  notes = [`A${selectedOctave}`, "B3", "C4", "D4", "E4", "F4", "G4", "A4"]
   
 }
 
@@ -74,8 +78,8 @@ function keyPressed()
   {
     if( key == '1')
     {
-      synth1.triggerAttack("A3", "8n");
-      userInput.push("A3");
+      synth1.triggerAttack(`A${selectedOctave}`, "8n");
+      userInput.push(`A${selectedOctave}`);
     }
     if(key == '2')
     {
@@ -163,9 +167,9 @@ function keyReleased()
 {
   if( key == '1')
   {
-    synth1.triggerRelease("A3", "+0.03");
-    synth2.triggerRelease("A3", "+0.03");
-    userInput.pop("A3");
+    synth1.triggerRelease(`A${selectedOctave}`, "+0.03");
+    synth2.triggerRelease(`A${selectedOctave}`, "+0.03");
+    userInput.pop(`A${selectedOctave}`);
   }
   if(key == '2')
   {
