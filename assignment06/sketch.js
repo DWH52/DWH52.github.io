@@ -78,8 +78,8 @@ function keyPressed()
   {
     if( key == '1')
     {
-      synth1.triggerAttack(`A${selectedOctave}`, "8n");
-      userInput.push(`A${selectedOctave}`);
+      synth1.triggerAttack(`A${selectedOctave - 1}`, "8n");
+      userInput.push(`A${selectedOctave-1}`);
     }
     if(key == '2')
     {
@@ -167,9 +167,9 @@ function keyReleased()
 {
   if( key == '1')
   {
-    synth1.triggerRelease(`A${selectedOctave}`, "+0.03");
-    synth2.triggerRelease(`A${selectedOctave}`, "+0.03");
-    userInput.pop(`A${selectedOctave}`);
+    synth1.triggerRelease(`A${selectedOctave -1}`, "+0.03");
+    synth2.triggerRelease(`A${selectedOctave -1}`, "+0.03");
+    userInput.pop(`A${selectedOctave -1}`);
   }
   if(key == '2')
   {
