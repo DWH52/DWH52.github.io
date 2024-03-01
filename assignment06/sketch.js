@@ -5,26 +5,23 @@ let notes = ["A3", "B3", "C4", "D4", "E4", "F4", "G4", "A4"];
 let displayText = [];
 let userInput = [];
 
-let octave = {
-  0 : 3,
-  12 : 4,
-  24 : 5,
-}
-
-let selectedOctave;
-
+let selectedOctave = 4;
+let octaveSlider;
 let instrumentSelect;
 
+//effect chain
 let volumeSlider;
 let volume = new Tone.Volume(0);
 
-let pitchSlider;
-let pitchShift = new Tone.PitchShift();
+let freeverbCheckbox;
+let freeverbIsChecked = false;
+let freeverbSlider;
+let freeverb = new Tone.Freeverb();
 
 synth1.connect(volume);
 synth2.connect(volume);
-volume.connect(pitchShift);
-pitchShift.toDestination();
+volume.toDestination();
+
 
 function setup() 
 {
@@ -39,12 +36,23 @@ function setup()
   instrumentSelect.selected('Simple Synth');
 
   volumeSlider = createSlider(-20, 20, 0, 1);
-  volumeSlider.position(width*(1/2), height-100);
+  volumeSlider.position(width*(1/2), 100);1
   volumeSlider.mouseMoved(() => volume.volume.value = volumeSlider.value());
 
-  pitchSlider = createSlider(-12, 12, 0, 12);
-  pitchSlider.position(width*(1/2), height-50);
-  pitchSlider.mouseMoved(() => pitchShift.pitch = pitchSlider.value());
+  octaveSlider = createSlider(1, 8, selectedOctave, 1);
+  octaveSlider.position(width*(1/2), 150);
+  octaveSlider.mouseMoved(() => selectedOctave = octaveSlider.value());
+
+  freeverbCheckbox = createCheckbox("Freeverb", false);
+  freeverbCheckbox.position(width*(3/4) - 25, 250)
+
+  freeverbSlider = createSlider(500,2000,500,500);
+  freeverbSlider.position(width*(1/2), 200);
+  freeverbSlider.mouseMoved(() => freeverb.dampening = freeverbSlider.value());
+  freeverbSlider.hide();
+
+ 
+  
 }
 
 function draw()
@@ -65,152 +73,184 @@ function draw()
     text(`${userInput}`, ((width/4) + 150), 50);
   }
 
-  text(`Volume: ${volumeSlider.value()}`, width*(3/4), height-100);
-  text(`Pitch: ${octave[pitchSlider.value()+12]}`, width*(3/4), height-50);
-  selectedOctave = octave[pitchSlider.value()+12];
-  notes = [`A${selectedOctave - 1}`, "B3", "C4", "D4", "E4", "F4", "G4", "A4"]
+  if(freeverbCheckbox.checked())
+  {
+    freeverbSlider.show();
+    volume.connect(freeverb);
+    freeverb.toDestination();
+    text(`Freeverb: ${freeverbSlider.value()}`, width*(3/4), 200);
+  }
+  else
+  {
+    freeverbSlider.hide();
+    freeverb.disconnect();
+    volume.toDestination();
+  }
+  text(`Volume: ${volumeSlider.value()}`, width*(3/4), 100);
+  text(`Octave: ${selectedOctave}`, width*(3/4), 150);
+  
+  notes = [`A${selectedOctave - 1}`, `B${selectedOctave - 1}`, `C${selectedOctave}`, `D${selectedOctave}`, `E${selectedOctave}`, `F${selectedOctave}`, `G${selectedOctave}`, `A${selectedOctave}`]
   
 }
 
 function keyPressed()
 {
+  Tone.start();
+  if( keyCode == UP_ARROW && selectedOctave != 8)
+  {
+    selectedOctave++;
+    octaveSlider.value(selectedOctave);
+  }
+  if(keyCode == DOWN_ARROW && selectedOctave != 1)
+  {
+    selectedOctave--;
+    octaveSlider.value(selectedOctave);
+  }
   if(instrumentSelect.selected() === 'Simple Synth')
   {
     if( key == '1')
     {
       synth1.triggerAttack(`A${selectedOctave - 1}`, "8n");
-      userInput.push(`A${selectedOctave-1}`);
+      userInput.push(`A${selectedOctave - 1}`);
     }
     if(key == '2')
     {
-      synth1.triggerAttack("B3", "8n");
-      userInput.push("B3");
+      synth1.triggerAttack(`B${selectedOctave - 1}`, "8n");
+      userInput.push(`B${selectedOctave - 1}`);
     }
     if(key == '3')
     {
-      synth1.triggerAttack("C4", "8n");
-      userInput.push("C4");
+      synth1.triggerAttack(`C${selectedOctave}`, "8n");
+      userInput.push(`C${selectedOctave}`);
     }
     if(key == '4')
     {
-      synth1.triggerAttack("D4", "8n");
-      userInput.push("D4");
+      synth1.triggerAttack(`D${selectedOctave}`, "8n");
+      userInput.push(`D${selectedOctave}`);
     }
     if(key == '5')
     {
-      synth1.triggerAttack("E4", "8n");
-      userInput.push("E4");
+      synth1.triggerAttack(`E${selectedOctave}`, "8n");
+      userInput.push(`E${selectedOctave}`);
     }
     if(key == '6')
     {
-      synth1.triggerAttack("F4", "8n");
-      userInput.push("F4");
+      synth1.triggerAttack(`F${selectedOctave}`, "8n");
+      userInput.push(`F${selectedOctave}`);
     }
     if(key == '7')
     {
-      synth1.triggerAttack("G4", "8n");
-      userInput.push("G4");
+      synth1.triggerAttack(`G${selectedOctave}`, "8n");
+      userInput.push(`G${selectedOctave}`);
     }
     if(key == '8')
     {
-      synth1.triggerAttack("A4", "8n");
-      userInput.push("A4");
+      synth1.triggerAttack(`A${selectedOctave}`, "8n");
+      userInput.push(`A${selectedOctave}`);
     }
   }
   else if(instrumentSelect.selected() === 'AM Synth')
   {
     if( key == '1')
     {
-      synth2.triggerAttack("A3", "8n");
-      userInput.push("A3");
+      synth2.triggerAttack(`A${selectedOctave - 1}`, "8n");
+      userInput.push(`A${selectedOctave - 1}`);
     }
     if(key == '2')
     {
-      synth2.triggerAttack("B3", "8n");
-      userInput.push("B3");
+      synth2.triggerAttack(`B${selectedOctave - 1}`, "8n");
+      userInput.push(`B${selectedOctave - 1}`);
     }
     if(key == '3')
     {
-      synth2.triggerAttack("C4", "8n");
-      userInput.push("C4");
+      synth2.triggerAttack(`C${selectedOctave}`, "8n");
+      userInput.push(`C${selectedOctave}`);
     }
     if(key == '4')
     {
-      synth2.triggerAttack("D4", "8n");
-      userInput.push("D4");
+      synth2.triggerAttack(`D${selectedOctave}`, "8n");
+      userInput.push(`D${selectedOctave}`);
     }
     if(key == '5')
     {
-      synth2.triggerAttack("E4", "8n");
-      userInput.push("E4");
+      synth2.triggerAttack(`E${selectedOctave}`, "8n");
+      userInput.push(`E${selectedOctave}`);
     }
     if(key == '6')
     {
-      synth2.triggerAttack("F4", "8n");
-      userInput.push("F4");
+      synth2.triggerAttack(`F${selectedOctave}`, "8n");
+      userInput.push(`F${selectedOctave}`);
     }
     if(key == '7')
     {
-      synth2.triggerAttack("G4", "8n");
-      userInput.push("G4");
+      synth2.triggerAttack(`G${selectedOctave}`, "8n");
+      userInput.push(`G${selectedOctave}`);
     }
     if(key == '8')
     {
-      synth2.triggerAttack("A4", "8n");
-      userInput.push("A4");
+      synth2.triggerAttack(`A${selectedOctave}`, "8n");
+      userInput.push(`A${selectedOctave}`);
     }
   }
   
 }
 
 function keyReleased()
-{
+{  
   if( key == '1')
   {
-    synth1.triggerRelease(`A${selectedOctave -1}`, "+0.03");
-    synth2.triggerRelease(`A${selectedOctave -1}`, "+0.03");
-    userInput.pop(`A${selectedOctave -1}`);
+    synth1.triggerRelease(`A${selectedOctave - 1}`, "+0.03");
+    synth2.triggerRelease(`A${selectedOctave - 1}`, "+0.03");
+    userInput.pop(`A${selectedOctave - 1}`);
   }
   if(key == '2')
   {
-    synth1.triggerRelease("B3", "+0.03");
-    synth2.triggerRelease("B3", "+0.03");
-    userInput.pop("B3");
+    synth1.triggerRelease(`B${selectedOctave - 1}`, "+0.03");
+    synth2.triggerRelease(`B${selectedOctave - 1}`, "+0.03");
+    userInput.pop(`B${selectedOctave - 1}`);
   }
   if(key == '3')
   {
-    synth1.triggerRelease("C4", "+0.03");
-    synth2.triggerRelease("C4", "+0.03");
-    userInput.pop("C4");
+    synth1.triggerRelease(`C${selectedOctave}`, "+0.03");
+    synth2.triggerRelease(`C${selectedOctave}`, "+0.03");
+    userInput.pop(`C${selectedOctave}`);
   }
   if(key == '4')
   {
-    synth1.triggerRelease("D4", "+0.03");
-    synth2.triggerRelease("D4", "+0.03");
-    userInput.pop("D4");
+    synth1.triggerRelease(`D${selectedOctave}`, "+0.03");
+    synth2.triggerRelease(`D${selectedOctave}`, "+0.03");
+    userInput.pop(`d${selectedOctave}`);
   }
   if(key == '5')
   {
-    synth1.triggerRelease("E4", "+0.03");
-    synth2.triggerRelease("E4", "+0.03");
-    userInput.pop("E4");
+    synth1.triggerRelease(`E${selectedOctave}`, "+0.03");
+    synth2.triggerRelease(`E${selectedOctave}`, "+0.03");
+    userInput.pop(`E${selectedOctave}`);
   }
   if(key == '6')
   {
-    synth1.triggerRelease("F4", "+0.03");
-    synth2.triggerRelease("F4", "+0.03");
-    userInput.pop("F4");
+    synth1.triggerRelease(`F${selectedOctave}`, "+0.03");
+    synth2.triggerRelease(`F${selectedOctave}`, "+0.03");
+    userInput.pop(`F${selectedOctave}`);
   }
   if(key == '7')
   {
-    synth1.triggerRelease("G4", "+0.03");
-    synth2.triggerRelease("G4", "+0.03");
-    userInput.pop("G4");
+    synth1.triggerRelease(`G${selectedOctave}`, "+0.03");
+    synth2.triggerRelease(`G${selectedOctave}`, "+0.03");
+    userInput.pop(`G${selectedOctave}`);
   }
   if(key == '8')
   {
-    synth1.triggerRelease("A4", "+0.03");
-    synth2.triggerRelease("A4", "+0.03");
-    userInput.pop("A4");
+    synth1.triggerRelease(`A${selectedOctave}`, "+0.03");
+    synth2.triggerRelease(`A${selectedOctave}`, "+0.03");
+    userInput.pop(`A${selectedOctave}`);
+  }
+  else
+  {
+    if(!keyIsPressed)
+    {
+      synth1.releaseAll();
+      synth2.releaseAll();
+    }
   }
 }
