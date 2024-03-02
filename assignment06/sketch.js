@@ -36,7 +36,7 @@ function setup()
   instrumentSelect.selected('Simple Synth');
 
   volumeSlider = createSlider(-20, 20, 0, 1);
-  volumeSlider.position(width*(1/2), 100);1
+  volumeSlider.position(width*(1/2), 100);
   volumeSlider.mouseMoved(() => volume.volume.value = volumeSlider.value());
 
   octaveSlider = createSlider(1, 8, selectedOctave, 1);
@@ -44,7 +44,7 @@ function setup()
   octaveSlider.mouseMoved(() => selectedOctave = octaveSlider.value());
 
   freeverbCheckbox = createCheckbox("Freeverb", false);
-  freeverbCheckbox.position(width*(3/4) - 25, 250)
+  freeverbCheckbox.position(width*(1/4), height - 25)
 
   freeverbSlider = createSlider(500,2000,500,500);
   freeverbSlider.position(width*(1/2), 200);
@@ -64,8 +64,10 @@ function draw()
   noStroke();
   for(i = 0; i < notes.length; i++ )
   {
-    displayText[i] = text(`${i+1} = ${notes[i]}`, (width/8), 40*(i+1));
+    displayText[i] = text(`${i+1} = ${notes[i]}`, (width/8), 35*(i+1));
   }
+  text(`Down Arrow = Octave Down`, (width/8), 325, width/8 + 20, 50);
+  text(`Up Arrow = Octave Up`, (width/8), 375, width/8 + 15, 50);
   if(userInput != null)
   {
     stroke("black");
@@ -110,42 +112,42 @@ function keyPressed()
   {
     if( key == '1')
     {
-      synth1.triggerAttack(`A${selectedOctave - 1}`, "8n");
+      synth1.triggerAttack(`A${selectedOctave - 1}`, "32n");
       userInput.push(`A${selectedOctave - 1}`);
     }
     if(key == '2')
     {
-      synth1.triggerAttack(`B${selectedOctave - 1}`, "8n");
+      synth1.triggerAttack(`B${selectedOctave - 1}`, "32n");
       userInput.push(`B${selectedOctave - 1}`);
     }
     if(key == '3')
     {
-      synth1.triggerAttack(`C${selectedOctave}`, "8n");
+      synth1.triggerAttack(`C${selectedOctave}`, "32n");
       userInput.push(`C${selectedOctave}`);
     }
     if(key == '4')
     {
-      synth1.triggerAttack(`D${selectedOctave}`, "8n");
+      synth1.triggerAttack(`D${selectedOctave}`, "32n");
       userInput.push(`D${selectedOctave}`);
     }
     if(key == '5')
     {
-      synth1.triggerAttack(`E${selectedOctave}`, "8n");
+      synth1.triggerAttack(`E${selectedOctave}`, "32n");
       userInput.push(`E${selectedOctave}`);
     }
     if(key == '6')
     {
-      synth1.triggerAttack(`F${selectedOctave}`, "8n");
+      synth1.triggerAttack(`F${selectedOctave}`, "32n");
       userInput.push(`F${selectedOctave}`);
     }
     if(key == '7')
     {
-      synth1.triggerAttack(`G${selectedOctave}`, "8n");
+      synth1.triggerAttack(`G${selectedOctave}`, "32n");
       userInput.push(`G${selectedOctave}`);
     }
     if(key == '8')
     {
-      synth1.triggerAttack(`A${selectedOctave}`, "8n");
+      synth1.triggerAttack(`A${selectedOctave}`, "32n");
       userInput.push(`A${selectedOctave}`);
     }
   }
@@ -153,42 +155,42 @@ function keyPressed()
   {
     if( key == '1')
     {
-      synth2.triggerAttack(`A${selectedOctave - 1}`, "8n");
+      synth2.triggerAttack(`A${selectedOctave - 1}`, "32n");
       userInput.push(`A${selectedOctave - 1}`);
     }
     if(key == '2')
     {
-      synth2.triggerAttack(`B${selectedOctave - 1}`, "8n");
+      synth2.triggerAttack(`B${selectedOctave - 1}`, "32n");
       userInput.push(`B${selectedOctave - 1}`);
     }
     if(key == '3')
     {
-      synth2.triggerAttack(`C${selectedOctave}`, "8n");
+      synth2.triggerAttack(`C${selectedOctave}`, "32n");
       userInput.push(`C${selectedOctave}`);
     }
     if(key == '4')
     {
-      synth2.triggerAttack(`D${selectedOctave}`, "8n");
+      synth2.triggerAttack(`D${selectedOctave}`, "32n");
       userInput.push(`D${selectedOctave}`);
     }
     if(key == '5')
     {
-      synth2.triggerAttack(`E${selectedOctave}`, "8n");
+      synth2.triggerAttack(`E${selectedOctave}`, "32n");
       userInput.push(`E${selectedOctave}`);
     }
     if(key == '6')
     {
-      synth2.triggerAttack(`F${selectedOctave}`, "8n");
+      synth2.triggerAttack(`F${selectedOctave}`, "32n");
       userInput.push(`F${selectedOctave}`);
     }
     if(key == '7')
     {
-      synth2.triggerAttack(`G${selectedOctave}`, "8n");
+      synth2.triggerAttack(`G${selectedOctave}`, "32n");
       userInput.push(`G${selectedOctave}`);
     }
     if(key == '8')
     {
-      synth2.triggerAttack(`A${selectedOctave}`, "8n");
+      synth2.triggerAttack(`A${selectedOctave}`, "32n");
       userInput.push(`A${selectedOctave}`);
     }
   }
