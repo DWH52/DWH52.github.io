@@ -44,14 +44,6 @@ const coinDelay = new Tone.Delay("16n");
 squareWave1.chain(bitCrush, Tone.Destination);
 squareWave2.chain(bitCrush, coinDelay, Tone.Destination);
 
-
-//The way to create the Super Mario coin sound is by 
-//playing an octave or 4th interval upwards at a fast 
-//tempo. Use a square wave from a synthesizer and 
-//edit the decay value (or release) to the desired 
-//length. Place the synth in mono so that 
-//only 1 note plays at a time.
-
 function preload()
 {
   eventImage = loadImage("assets/GoldCoin.png");
