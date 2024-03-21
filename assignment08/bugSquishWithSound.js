@@ -1,4 +1,7 @@
 //Global Variables
+let squishSound;
+let mainMusic;
+
 let spriteSheets = [];
 let spriteAnimation = [];
 
@@ -17,8 +20,13 @@ let isPaused = false;
 //Core Program Functions
 function preload()
 {
-    spriteSheets = [loadImage("assets/Bug.png"),loadImage("assets/BugSquished.png"),loadImage("assets/BugDead.png")];
-    gameFont = loadFont("assets/PressStart2P-Regular.ttf");
+  squishSound = new Tone.Player("assets/sounds/crunch.mp3");
+  squishSound.toDestination();
+  mainMusic = new Tone.Player("assets/sounds/bitBeatsSix.mp3");
+  mainMusic.loop = true;
+  mainMusic.toDestination();
+  spriteSheets = [loadImage("assets/Bug.png"),loadImage("assets/BugSquished.png"),loadImage("assets/BugDead.png")];
+  gameFont = loadFont("assets/PressStart2P-Regular.ttf");
 }
 
 function setup() 
@@ -97,12 +105,14 @@ function notPlaying()
 {
     if(gameCount != 0)
     {
+      mainMusic.stop();
         text("Game Over. Score: " + score , windowWidth/2,(windowHeight/2)-100);
         textStyle("bold");
         text("Press SPACEBAR to Play Again.", windowWidth/2,(windowHeight/2)+100);
     }
     else
     {
+      mainMusic.stop();
       push();
       textSize(24);
       text("Welcome to Bug Squisher!", windowWidth/2,(windowHeight/2)-100);
@@ -122,24 +132,31 @@ function keyPressed()
     if(key === ' ') //Spacebar to Play
     {
         if(gameOver)
-        { 
-            timeRemaining = 30;
-            score = 0;
-            gameOver = false;
-            numberOfAnimations = 10;
-            initialSpeed = 1;
-            for(i = 0; i < numberOfAnimations; i++)
-            {
-                spriteAnimation[i] = new SpriteMovementAnimation(spriteSheets[0],32,32,8, (random([1,4])*initialSpeed));
-            }
+        {
+          //mainMusic.playbackRate = 1;
+          mainMusic.start();
+          timeRemaining = 30;
+          score = 0;
+          gameOver = false;
+          numberOfAnimations = 10;
+          initialSpeed = 1;
+          for(i = 0; i < numberOfAnimations; i++)
+          {
+              spriteAnimation[i] = new SpriteMovementAnimation(spriteSheets[0],32,32,8, (random([1,4])*initialSpeed));
+          }
         }
     }
     if(keyCode === ESCAPE) //Pause Button
     {
-        if(!gameOver)
-        {
-            isPaused = !isPaused;
-        }
+      if(!gameOver)
+      {
+        mainMusic.stop();
+        isPaused = !isPaused;
+      }
+      if(!isPaused)
+      {
+        mainMusic.start();
+      }
     }
 }
 
@@ -154,16 +171,18 @@ function mousePressed()
         {
             if(spriteAnimation[i].isDead == false)
             {
-                score += 1;
-                
-                spriteAnimation[i].spritesheet = spriteSheets[2];
-                spriteAnimation[i].kill();
-                initialSpeed *= 1.05;
-                for(j = 0; j < 2; j++)
-                {
-                    spriteAnimation[numberOfAnimations] = new SpriteMovementAnimation(spriteSheets[0],32,32,8, (random([1,4])*initialSpeed));
-                    numberOfAnimations++;
-                }
+              squishSound.start();
+              score += 1;
+              
+              spriteAnimation[i].spritesheet = spriteSheets[2];
+              spriteAnimation[i].kill();
+              initialSpeed *= 1.05;
+              //mainMusic.playbackRate = mainMusic.playbackRate *= 1.05;
+              for(j = 0; j < 2; j++)
+              {
+                  spriteAnimation[numberOfAnimations] = new SpriteMovementAnimation(spriteSheets[0],32,32,8, (random([1,4])*initialSpeed));
+                  numberOfAnimations++;
+              }
             }
         }
     }
