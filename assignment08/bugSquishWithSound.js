@@ -133,7 +133,8 @@ function keyPressed()
     {
         if(gameOver)
         {
-          //mainMusic.playbackRate = 1;
+          Tone.Transport.start();
+          mainMusic.playbackRate = 1;
           mainMusic.start();
           timeRemaining = 30;
           score = 0;
@@ -151,10 +152,12 @@ function keyPressed()
       if(!gameOver)
       {
         mainMusic.stop();
+        //Tone.Transport.pause();
         isPaused = !isPaused;
       }
       if(!isPaused)
       {
+        //Tone.Transport.start("+0", Tone.Transport.position);
         mainMusic.start();
       }
     }
@@ -177,7 +180,7 @@ function mousePressed()
               spriteAnimation[i].spritesheet = spriteSheets[2];
               spriteAnimation[i].kill();
               initialSpeed *= 1.05;
-              //mainMusic.playbackRate = mainMusic.playbackRate *= 1.05;
+              mainMusic.playbackRate = mainMusic.playbackRate *= 1.02;
               for(j = 0; j < 2; j++)
               {
                   spriteAnimation[numberOfAnimations] = new SpriteMovementAnimation(spriteSheets[0],32,32,8, (random([1,4])*initialSpeed));
