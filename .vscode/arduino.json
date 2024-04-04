@@ -1,0 +1,6 @@
+{
+    "board": "arduino:renesas_uno:minima",
+    "programmer": "stlink",
+    "sketch": "assignment09\\assignment09.ino",
+    "port": "COM3"
+}
