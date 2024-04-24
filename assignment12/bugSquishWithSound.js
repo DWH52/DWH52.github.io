@@ -16,10 +16,13 @@ let isPaused = false;
 
 let port;
 let connected = false;
-let joyX = 0, joyY = 0, sw = 0;
+let joyX = 0, joyY = 0, sw = 0, auxButton = 0;
 let connectButton;
 let circleX, circleY;
-let speed = 4;
+let controlSpeed = 4;
+
+let previousSW = 0;
+let previousAux = 0;
 
 
 //END OF GLOBAL VARIABLES
@@ -62,13 +65,16 @@ function setup()
 
 function draw() 
 { 
-  
+  //port.write('0');
   if(frameCount % 300 == 0)
     {
       port.clear();
     }
   let str = port.readUntil("\n");
   let values = str.split(",");
+  auxButton = values[3];
+  let auxButtonDiff = previousAux + auxButton;
+
   if(!connected)
   {
     connectButton.show();
@@ -85,6 +91,10 @@ function draw()
         fill(255,255,255);
         textSize(24);
         notPlaying();
+        if(auxButtonDiff == 1)
+        {
+          buttonPressed();
+        }
     }
     else
     {   
@@ -109,19 +119,19 @@ function playing(values)
           sw = Number(values[2]);
       
           if (joyX > 0) {
-            circleX += speed;
+            circleX += (controlSpeed + (abs(joyX)*0.01));
           } else if (joyX < 0) {
-            circleX -= speed;
+            circleX -= (controlSpeed + (abs(joyX)*0.01));
           }
       
           if (joyY > 0) {
-            circleY += speed;
+            circleY += (controlSpeed + (abs(joyY)*0.01));
           } else if (joyY < 0) {
-            circleY -= speed;
+            circleY -= (controlSpeed + (abs(joyY)*0.01));
           }
         }
       
-        if (sw == 1) {
+        if (previousSW - sw != 0) {
           smashPressed();
         }
         console.log(sw);
@@ -131,11 +141,11 @@ function playing(values)
             spriteAnimation[i].draw();
         }
 
-        
-
         push();
-        fill('white');
+        blendMode(REMOVE);
+        fill(0,0,0,50);
         circle(circleX, circleY, 50);
+        blendMode(BLEND);
         fill(0);
         rect((windowWidth/2),50,windowWidth,100);
         fill(255,255,255);
@@ -151,6 +161,9 @@ function playing(values)
             gameOver = true;
         }
         pop();
+
+        previousSW = sw;
+
     }
     else
     {
@@ -161,6 +174,7 @@ function playing(values)
         textStyle("bold");
         text("Press ESCAPE to Resume.", windowWidth/2,(windowHeight/2)+100); 
     }
+    
 }
 
 function notPlaying()
@@ -168,9 +182,10 @@ function notPlaying()
     if(gameCount != 0)
     {
       mainMusic.stop();
-        text("Game Over. Score: " + score , windowWidth/2,(windowHeight/2)-100);
-        textStyle("bold");
-        text("Press SPACEBAR to Play Again.", windowWidth/2,(windowHeight/2)+100);
+      text("Game Over. Score: " + score , windowWidth/2,(windowHeight/2)-100);
+      textStyle("bold");
+      text("Press Button to Play Again.", windowWidth/2,(windowHeight/2)+100);
+      
     }
     else
     {
@@ -179,20 +194,21 @@ function notPlaying()
       textSize(24);
       text("Welcome to Bug Squisher!", windowWidth/2,(windowHeight/2)-100);
       textSize(16);
-      text("Click On Bugs to Squish Them. Each One Dead is a Point!", windowWidth/2,(windowHeight/2)-50);
-      text("Controls: CLICK - Squish a Bug, ESCAPE - Pause the Game.", windowWidth/2,(windowHeight/2));
+      text("Hover Over and Smash Bugs to Squish Them. Each One Dead is a Point!", windowWidth/2,(windowHeight/2)-50);
+      text("Controls-", windowWidth/2,(windowHeight/2))
+      text("Joystick/Joystick Button: Move Cursor / Squish Bug, Button: Pause the Game.", windowWidth/2,(windowHeight/2)+50);
       textStyle("bold");
-      text("Press SPACEBAR to Play.", windowWidth/2,(windowHeight/2)+50);
+      text("Press Button to Play.", windowWidth/2,(windowHeight/2)+100);
       pop();
     }
 }
 //END OF GAMESTATES
 
 //Keyboard & Mouse Controls
-function keyPressed()
+function buttonPressed()
 {
-    if(key === ' ') //Spacebar to Play
-    {
+    //if(key === ' ') //Spacebar to Play
+    //{
         if(gameOver)
         {
           Tone.Transport.start();
@@ -208,8 +224,8 @@ function keyPressed()
               spriteAnimation[i] = new SpriteMovementAnimation(spriteSheets[0],32,32,8, (random([1,4])*initialSpeed));
           }
         }
-    }
-    if(keyCode === ESCAPE) //Pause Button
+    //}
+    /*if(keyCode === ESCAPE) //Pause Button
     {
       if(!gameOver)
       {
@@ -222,7 +238,7 @@ function keyPressed()
         //Tone.Transport.start("+0", Tone.Transport.position);
         mainMusic.start();
       }
-    }
+    }*/
 }
 
 function smashPressed()
@@ -236,6 +252,7 @@ function smashPressed()
         {
             if(spriteAnimation[i].isDead == false)
             {
+              squishSound.stop();
               squishSound.start();
               score += 1;
               
@@ -344,6 +361,9 @@ class SpriteMovementAnimation
     this.moving = 0;
     this.spritesheet = spriteSheets[1];
     this.isDead = true;
+
+    let message = `${(score % 3) + 1}\n`;
+    port.write(message);
   }
 }
 

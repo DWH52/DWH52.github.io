@@ -20,6 +20,8 @@ void setup() {
   // put your setup code here, to run once:
   Serial.begin(9600);
   pinMode(SW_PIN, INPUT_PULLUP);
+  pinMode(12, OUTPUT);
+  pinMode(8, INPUT);
 
   for(int i = 0; i < numReadings; i++) {
     xReadings[i] = 0;
@@ -32,6 +34,7 @@ void loop() {
   int x = analogRead(VRX_PIN);
   int y = analogRead(VRY_PIN);
   int sw = digitalRead(SW_PIN);
+  int auxButton = digitalRead(8);
 
   xTotal = xTotal - xReadings[readIndex];
   yTotal = yTotal - yReadings[readIndex];
@@ -62,16 +65,36 @@ void loop() {
   if (start) {
     unsigned long now = millis();
     if (now - lastTime > interval) {
-      //Serial.print("x = ");
       Serial.print((int) (xAverage-xStart));
       Serial.print(",");
       Serial.print((int) (yAverage-yStart));
       Serial.print(",");
-      Serial.println(!sw);
+      Serial.print(!sw);
+      Serial.print(",");
+      Serial.println(auxButton);
     
       lastTime = now;
     }
+  }
 
-    //delay(20);
+  while(Serial.available() > 0)
+  {
+    int buzzerToggle = Serial.parseInt();
+    
+    if(Serial.read() == '\n')
+    {
+      if(buzzerToggle == 1)
+      {
+        tone(12, 330, 250);
+      }
+      if(buzzerToggle == 2)
+      {
+        tone(12, 400, 250);
+      }
+      if(buzzerToggle == 3)
+      {
+        tone(12, 450, 250);
+      }
+    }
   }
 }
