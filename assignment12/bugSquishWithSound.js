@@ -243,8 +243,6 @@ function smashPressed()
               spriteAnimation[i].spritesheet = spriteSheets[2];
               spriteAnimation[i].kill();
               initialSpeed *= 1.05;
-              previousPlaybackRate = mainMusic.playbackRate;
-              mainMusic.playbackRate = previousPlaybackRate *= 1.02;
               for(j = 0; j < 2; j++)
               {
                   spriteAnimation[numberOfAnimations] = new SpriteMovementAnimation(spriteSheets[0],32,32,8, (random([1,4])*initialSpeed));
@@ -346,6 +344,7 @@ class SpriteMovementAnimation
     this.moving = 0;
     this.spritesheet = spriteSheets[1];
     this.isDead = true;
+    mainMusic.playbackRate *= 1.02;
   }
 }
 
