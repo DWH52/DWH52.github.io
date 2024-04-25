@@ -196,7 +196,7 @@ function notPlaying()
       textSize(16);
       text("Hover Over and Smash Bugs to Squish Them. Each One Dead is a Point!", windowWidth/2,(windowHeight/2)-50);
       text("Controls-", windowWidth/2,(windowHeight/2))
-      text("Joystick/Joystick Button: Move Cursor / Squish Bug, Button: Pause the Game.", windowWidth/2,(windowHeight/2)+50);
+      text("Joystick/Joystick Button: Move Cursor / Squish Bug.", windowWidth/2,(windowHeight/2)+50);
       textStyle("bold");
       text("Press Button to Play.", windowWidth/2,(windowHeight/2)+100);
       pop();
