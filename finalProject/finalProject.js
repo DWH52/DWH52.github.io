@@ -1,15 +1,11 @@
 let playerCharacter;
-let playerImage;
-let levelImage;
-let blankWall;
-let leftWallMiddle, leftWallTop, leftWallBottom;
-let rightWallMiddle, rightWallTop, rightWallBottom;
-let ladder;
-let floorMiddle, ceilingMiddle;
-let columnMiddle, columnTop, columnBotton;
-let ground,ceiling;
-
-let collectibleKeys1, collectibleKeys2, collectibleKeys3;
+let playerImage, levelImage, keyImage, gameFont;
+let levelGraphic, headsUpDisplayGraphic;
+let isPlaying;
+let timeElapsed, recordedTime;
+let keys, emptyKey1, emptyKey2, emptyKey3, redKey, blueKey, greenKey;
+let redKeyCollected, greenKeyCollected, blueKeyCollected;
+let gameCount;
 
 function preload()
 {
@@ -17,70 +13,219 @@ function preload()
     playerImage = loadImage("assets/sprites/playerCharacter.png");
     levelImage = loadImage("assets/tilesets/indoorTileset.png");
     keyImage = loadImage("assets/sprites/keyArt.png");
+    gameFont = loadFont("assets/fonts/PressStart2P-Regular.ttf");
     
 }
 
 function setup()
 {
-    new Canvas(800/3, 800/3, 'pixelated x3'); 
-    allSprites.pixelPerfect = true;
-    background(36,34,52);
-    allSprites.rotationLock = true;
-    createMap();
+    createCanvas(400,600);
+    imageMode(CENTER);
+    textAlign(CENTER);
+    textFont(gameFont);
+    headsUpDisplayGraphic = createGraphics(400,100);
+    levelGraphic = createGraphics(600,500); 
     
-    new Tiles(
-        
-        [
-            "4...............5",
-            "4...............5",
-            "4...............5",
-            "4...............5",
-            "4111111116......5",
-            "4........6......5",
-            "4........6......5",
-            "4....61111......5",
-            "4....6..........5",
-            "4....6...11161115",
-            "4....6......6...5",
-            "4....6......6...5",
-            "411611......6...5",
-            "4..6........6...5",
-            "4..6........6...5",
-            "4..6........6...5",
-            "21111111111111113"
-        ],
-        9,9, // x, y
-        15.5,15.5 // w,h
-    )
-    createKeys();
-    
-    collectibleKeys1.changeAni('red');
-    collectibleKeys2.changeAni('green');
-    collectibleKeys3.changeAni('blue');
+    isPlaying = false;
+    redKeyCollected, greenKeyCollected, blueKeyCollected = false;
     createCharacter();
-    
+    createKeys();
+    allSprites.rotationLock = true;
+    gameCount = 0;
 }
 
 function draw()
 {
     clear();
-    background(36,34,52);
-    noFill();
+    emptyKey1.x = 220;
+    emptyKey1.y = 50;
+    emptyKey2.x = 220;
+    emptyKey2.y = 80;
+    emptyKey3.x = 250
+    emptyKey3.y = 65;
+
+    if(isPlaying)
+    {
+        redKey.visible = true;
+        greenKey.visible = true;
+        blueKey.visible = true;
+        game();
+
+    }
+    else if(gameCount == 0)
+    {
+        menu();
+        redKey.x = 220;
+        redKey.y = 185;
+        greenKey.x = 160;
+        greenKey.y = 400;
+        blueKey.x = 100;
+        blueKey.y = 350;
+        redKey.visible = false;
+        greenKey.visible = false;
+        blueKey.visible = false;
+        playerCharacter.visible = false;
+        redKeyCollected = false;
+        blueKeyCollected = false;
+        greenKeyCollected = false;
+        //recordedTime = 0;
+        timeElapsed = 0;
+        gameCount = 0;
+        
+    }
+    else
+    {
+        menu();
+        playerCharacter.x = 30;
+        playerCharacter.y = 475;
+        redKey.x = random(15,385);
+        redKey.y = random(120, 550);
+        greenKey.x = random(15,385);
+        greenKey.y = random(120, 550);
+        blueKey.x = random(15,385);
+        blueKey.y = random(120, 550);
+        redKey.visible = false;
+        greenKey.visible = false;
+        blueKey.visible = false;
+        playerCharacter.visible = false;
+        redKeyCollected = false;
+        blueKeyCollected = false;
+        greenKeyCollected = false;
+        timeElapsed = 0;
+    }
     
+}
+function game()
+{
+
+    timeElapsed += deltaTime/1000;
+    playerCharacter.visible = true;
+    playerCharacter.overlap(redKey);
+    playerCharacter.overlap(greenKey);
+    playerCharacter.overlap(blueKey);
+    
+    if(!redKeyCollected)
+    {
+        emptyKey1.visible = true;
+    }
+    else
+    {
+        emptyKey1.visible = false;
+        redKey.x = emptyKey1.x;
+        redKey.y = emptyKey1.y;
+    }
+    if(!greenKeyCollected)
+    {
+        emptyKey2.visible = true;
+    }
+    else
+    {
+        emptyKey2.visible = false;
+        greenKey.x = emptyKey2.x;
+        greenKey.y = emptyKey2.y;
+    }
+    if(!blueKeyCollected)
+    {
+        emptyKey3.visible = true;
+    }
+    else
+    {
+        emptyKey3.visible = false;
+        blueKey.x = emptyKey3.x;
+        blueKey.y = emptyKey3.y;
+    }
+    if(redKeyCollected && greenKeyCollected && blueKeyCollected)
+    {
+        gameCount += 1;
+        isPlaying = false;
+        if(gameCount > 0)
+        {
+            recordedTime = timeElapsed
+        }
+    }
+    playerCharacter.debug = true; // hitbox
+    
+    level();
+    headsUpDisplay(timeElapsed);
+    
+    image(headsUpDisplayGraphic,200,50);
+    image(levelGraphic,200,350);
+    
+}
+function menu()
+{
+    emptyKey1.visible = false;
+    emptyKey2.visible = false;
+    emptyKey3.visible = false;
+    if(gameCount == 0)
+    {
+        push();
+        background(100,100,100);
+        textSize(18);
+        text("Time is Key!", width/2,(height/2)-200);
+        textSize(12);
+        text("Find All 3 Keys,", width/2,(height/2)-100);
+        text("Bring to Door to Escape!", width/2,(height/2)-50);
+        text("Controls: Joystick - Movement,", width/2,(height/2)+50);
+        text("Button - Interact", width/2,(height/2)+100);
+        textStyle("bold");
+        textSize(16);
+        text("Press Button to Play!", width/2,(height/2)+200);
+    pop();
+    gameCount++;
+    }
+    else
+    {
+        push();
+        background(100,100,100);
+        textSize(18);
+        text("Time is Key!", width/2,(height/2)-200);
+        textSize(12);
+        text("You Found All 3 Keys!", width/2,(height/2)-100);
+        text("Your Time Was: " + ceil(recordedTime) + " Seconds!", width/2,(height/2)-50);
+        text("Controls: Joystick - Movement,", width/2,(height/2)+50);
+        text("Button - Interact", width/2,(height/2)+100);
+        textStyle("bold");
+        textSize(14);
+        text("Press Button to Play Again!", width/2,(height/2)+200);
+    pop();
+    }
+}
+function headsUpDisplay(timeElapsed)
+{
+    push();
+        headsUpDisplayGraphic.background(100,100,100);
+        headsUpDisplayGraphic.fill(0,0,0);
+        headsUpDisplayGraphic.textFont(gameFont);
+        headsUpDisplayGraphic.textStyle('bold');
+        headsUpDisplayGraphic.textSize(14);
+        headsUpDisplayGraphic.text("Time is Key!", 100,30);
+        headsUpDisplayGraphic.textSize(12);
+        headsUpDisplayGraphic.text("Keys Collected: ", 10,70);
+        headsUpDisplayGraphic.text("Time: " + ceil(timeElapsed), 290,70);
+        //console.log(ceil(timeElapsed));
+    pop();
+}
+
+function level()
+{
+    levelGraphic.background(36,34,52);
+    //camera.x = playerCharacter.x;
+    //camera.y = playerCharacter.y;
+    emptyKey1.x = 220;
+    emptyKey1.y = 50;
+    emptyKey2.x = 220;
+    emptyKey2.y = 80;
+    emptyKey3.x = 250
+    emptyKey3.y = 65;
 }
 
 function createCharacter()
 {
-    playerCharacter = new Sprite(30,height-31,16,32);
+    playerCharacter = new Sprite(30,475,16,32,'d');
     playerCharacter.spriteSheet = playerImage;
-    playerCharacter.anis.offset.x = 2;
     playerCharacter.anis.frameDelay = 12;
-    playerCharacter.collider = 'dynamic';
-    playerCharacter.friction = 0;
-    playerCharacter.bounciness = 0;
-    playerCharacter.drag = 0;
-    playerCharacter.rotationDrag = 0;
-    playerCharacter.layer = 2;
+    playerCharacter.layer = 5;
 
     playerCharacter.addAnis({
         walkHorizontal: { row: 1, frames: 4},
@@ -89,215 +234,135 @@ function createCharacter()
         stand: { row: 0, frames: 1},
     })
     playerCharacter.changeAni('stand');
-}
 
-function createKeys()
-{
-    collectibleKeys1 =  new Sprite(100,50,32,32);
-    collectibleKeys2 =  new Sprite(200,100,32,32);
-    collectibleKeys3 =  new Sprite(35,175,32,32);
+    playerCharacter.layer = 0;
+    playerCharacter.scale = 1.5;
     
-    collectibleKeys1.spriteSheet = keyImage;
-    collectibleKeys2.spriteSheet = keyImage;
-    collectibleKeys3.spriteSheet = keyImage;
-    collectibleKeys1.addAnis({
-        red: {row: 0, frames: 1},
-        green: {row: 1, frames: 1},
-        blue: {row: 2, frames: 1}
-    });
-    collectibleKeys2.addAnis({
-        red: {row: 0, frames: 1},
-        green: {row: 1, frames: 1},
-        blue: {row: 2, frames: 1}
-    });
-    collectibleKeys3.addAnis({
-        red: {row: 0, frames: 1},
-        green: {row: 1, frames: 1},
-        blue: {row: 2, frames: 1}
-    });
-
-    collectibleKeys1.collider = 'none';
-    collectibleKeys2.collider = 'none';
-    collectibleKeys3.collider = 'none';
-
-    collectibleKeys1.layer = 1;
-    collectibleKeys2.layer = 1;
-    collectibleKeys3.layer = 1;
+    characterExists = true;
 }
+
 function keyPressed()
 {
-    if(key == 'd')
+    // Controls
+    if(key == 'd' || keyCode == RIGHT_ARROW)
     {
+        playerCharacter.move(width,'right',2);
         playerCharacter.changeAni('walkHorizontal');
-        playerCharacter.move(width,'right',1);
-            
+        playerCharacter.mirror.x = false;
     }
-    if(key == 'a')
+    if(key == 'a' || keyCode == LEFT_ARROW)
     {
+        playerCharacter.move(width,'left',2)
         playerCharacter.changeAni('walkHorizontal');
         playerCharacter.mirror.x = true;
-        playerCharacter.move(width,'left',1);
     }
-    if(key == 's')
+    if(key == 'w' || keyCode == UP_ARROW)
     {
+        playerCharacter.move(height,'up',2)
         playerCharacter.changeAni('walkUp');
-        playerCharacter.move(height,'down',1);
+        playerCharacter.mirror.x = true;
     }
-    if(key == 'w')
+    if(key == 's' || keyCode == DOWN_ARROW)
     {
-        playerCharacter.changeAni('walkUp');
-        playerCharacter.move(height,'up',1);
-        world.gravity.y = 0;
+        playerCharacter.move(height,'down',2)
+        playerCharacter.changeAni('walkDown');
     }
-    if(key == ' ')
-    {
-        world.gravity.y = -4;
-    }
+    
+   if(key == ' ')
+   {
+        //isPlaying = !isPlaying; // used to test Game State Changes
+       if(!isPlaying)
+        {
+            isPlaying = !isPlaying;
+        }
+        else
+        {
+            if(playerCharacter.overlapping(redKey))
+            {
+                redKeyCollected = true;
+            }
+            if(playerCharacter.overlapping(greenKey))
+            {
+                greenKeyCollected = true;
+            }
+            if(playerCharacter.overlapping(blueKey))
+            {
+                blueKeyCollected = true;
+            }
+        }  
+   }
 }
 
 function keyReleased()
 {
+    
     playerCharacter.changeAni('stand');
     playerCharacter.mirror.x = false;
     playerCharacter.vel.x = 0;
     playerCharacter.vel.y = 0;
-    world.gravity.y = 2;
+
 }
 
-function createMap()
+function createKeys()
 {
-    blankWall = new Group();
-    blankWall.collider = 'none';
-    blankWall.spriteSheet = levelImage;
-    blankWall.addAni({w:16.,h:16.8,row:2,col:2});
-    blankWall.tile = '0';
-    blankWall.layer = 1;
+    //empty keys
+    emptyKey1 = new Sprite(220,50,16,16,'d');
+    emptyKey2 = new Sprite(220,80,16,16,'d');
+    emptyKey3 = new Sprite(250,65,16,16,'d');
 
-    floorMiddle = new Group();
-    floorMiddle.collider = 'none';
-    floorMiddle.spriteSheet = levelImage;
-    floorMiddle.addAni({w:16.2, h:16.5, row:1, col:2});
-    floorMiddle.tile = '1';
-    floorMiddle.layer = 1;
-    floorMiddle = 2
+    emptyKey1.spriteSheet = keyImage;
+    emptyKey1.addAnis({
+        empty: {row: 3, frames: 1}
+    })
+    emptyKey1.changeAni('empty');
+    emptyKey1.layer = 1;
+    emptyKey1.scale = 2;
 
-    leftWallBottom = new Group();
-    leftWallBottom.collider = 'none';
-    leftWallBottom.spriteSheet = levelImage;
-    leftWallBottom.addAni({w:16.1,h:17, row: 6, col:1});
-    leftWallBottom.tile = '2';
-    leftWallBottom.layer = 1;
+    emptyKey2.spriteSheet = keyImage;
+    emptyKey2.addAnis({
+        empty: {row: 3, frames: 1}
+    })
+    emptyKey2.changeAni('empty');
+    emptyKey2.layer = 1;
+    emptyKey2.scale = 2;
 
-    rightWallBottom = new Group();
-    rightWallBottom.collider = 'none';
-    rightWallBottom.spriteSheet = levelImage;
-    rightWallBottom.addAni({w:16.1,h:17, row: 6, col:2});
-    rightWallBottom.tile = '3';
-    rightWallBottom.layer = 1;
+    emptyKey3.spriteSheet = keyImage;
+    emptyKey3.addAnis({
+        empty: {row: 3, frames: 1}
+    })
+    emptyKey3.changeAni('empty');
+    emptyKey3.layer = 1;
+    emptyKey3.scale = 2;
+    
+    //collectible keys
+    redKey = new Sprite(220,185,16,16,'d');
+    greenKey = new Sprite(160,400,16,16,'d');
+    blueKey = new Sprite(100,350,16,16,'d');
 
-    leftWallMiddle = new Group();
-    leftWallMiddle.collider = 'none';
-    leftWallMiddle.spriteSheet = levelImage;
-    leftWallMiddle.addAni({w:16.6,h:16.9,row:2,col:3});
-    leftWallMiddle.tile = '4';
-    leftWallMiddle.layer = 1;
+    redKey.spriteSheet = keyImage;
+    redKey.addAnis({
+        red: {row: 0, frames: 1}
+    })
+    redKey.changeAni('red');
+    redKey.layer = 1;
+    redKey.scale = 2;
 
-    rightWallMiddle = new Group();
-    rightWallMiddle.collider = 'none';
-    rightWallMiddle.spriteSheet = levelImage;
-    rightWallMiddle.addAni({w:16.6,h:16.9,row:2,col:1});
-    rightWallMiddle.tile = '5';
-    rightWallMiddle.layer = 1;
+    greenKey.spriteSheet = keyImage;
+    greenKey.addAnis({
+        green: {row: 1, frames: 1}
+    })
+    greenKey.changeAni('green');
+    greenKey.layer = 1;
+    greenKey.scale = 2;
 
-    ladder = new Group();
-    ladder.collider = 'none';
-    ladder.spriteSheet = levelImage;
-    ladder.addAni({w:16.8235,h:16.9,row:4,col:8});
-    ladder.tile = '6';
-    ladder.layer = 1;
-
-    createBoundaries();
+    blueKey.spriteSheet = keyImage;
+    blueKey.addAnis({
+        blue: {row: 2, frames: 1}
+    })
+    blueKey.changeAni('blue');
+    blueKey.layer = 1;
+    blueKey.scale = 2;
 }
 
-function createBoundaries()
-{
-    ceiling = new Sprite(0,0,width*3,0,'static');
-    ceiling.layer = 0;
-    ceiling.color = '0,0,0,0';
-    ceiling.friction = 0;
-    ceiling.bounciness = 0;
-    ceiling.drag = 0;
-    ceiling.rotationDrag = 0;
 
-    ground = new Sprite(0,height-14,width*3,0,'static');
-    ground.layer = 0;
-    ground.color = '0,0,0,0';
-    ground.friction = 0;
-    ground.bounciness = 0;
-    ground.drag = 0;
-    ground.rotationDrag = 0;
 
-    leftWall = new Sprite(15,0,0,height*3, 'static');
-    leftWall.layer = 0;
-    leftWall.color = '0,0,0,0';
-    leftWall.friction = 0;
-    leftWall.bounciness = 0;
-    leftWall.drag = 0;
-    leftWall.rotationDrag = 0;
-
-    rightWall = new Sprite(width-16,0,0,height*3, 'static');
-    rightWall.layer = 0;
-    rightWall.color = '0,0,0,0';
-    rightWall.friction = 0;
-    rightWall.bounciness = 0;
-    rightWall.drag = 0;
-    rightWall.rotationDrag = 0;
-
-    platform1 = new Sprite(30,195,28,9,'static');
-    platform1.layer = 0;
-    platform1.color = '0,0,0,0';
-    platform1.friction = 0;
-    platform1.bounciness = 0;
-    platform1.drag = 0;
-    platform1.rotationDrag = 0;
-
-    platform2 = new Sprite(79,195,23,9,'static');
-    platform2.layer = 0;
-    platform2.color = '0,0,0,0';
-    platform2.friction = 0;
-    platform2.bounciness = 0;
-    platform2.drag = 0;
-    platform2.rotationDrag = 0;
-
-    platform3 = new Sprite(164,148,40,9,'static');
-    platform3.layer = 0;
-    platform3.color = '0,0,0,0';
-    platform3.friction = 0;
-    platform3.bounciness = 0;
-    platform3.drag = 0;
-    platform3.rotationDrag = 0;
-
-    platform4 = new Sprite(227,148,40,9,'static');
-    platform4.layer = 0;
-    platform4.color = '0,0,0,0';
-    platform4.friction = 0;
-    platform4.bounciness = 0;
-    platform4.drag = 0;
-    platform4.rotationDrag = 0;
-
-    platform5 = new Sprite(76,71,120,9,'static');
-    platform5.layer = 0;
-    platform5.color = '0,0,0,0';
-    platform5.friction = 0;
-    platform5.bounciness = 0;
-    platform5.drag = 0;
-    platform5.rotationDrag = 0;
-
-    platform5 = new Sprite(125,117,55,9,'static');
-    platform5.layer = 0;
-    platform5.color = '0,0,0,0';
-    platform5.friction = 0;
-    platform5.bounciness = 0;
-    platform5.drag = 0;
-    platform5.rotationDrag = 0;
-}
