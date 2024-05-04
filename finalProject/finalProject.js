@@ -202,13 +202,15 @@ function setup()
     connectButton.mousePressed(connect);
     connectButton.position(20,20);
     connectButton.hide();
+    message = '0\n';
+    port.write(message);
 }
 
 function draw()
 {   
     clear();
-    
-    if(frameCount % 150 == 0)
+    console.log(frameCount);
+    if(frameCount % 60 == 0)
     {
         port.clear();
     }
@@ -791,7 +793,7 @@ function buttonPressed() // Will be edited once arduine input is implemented
 
 function connect() {
     if (!port.opened()) {
-      port.open('Arduino', 9600);
+      port.open('Arduino', 38400);
       connected = true;
     } else {
       port.close();
