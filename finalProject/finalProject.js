@@ -775,6 +775,8 @@ function buttonPressed() // Will be edited once arduine input is implemented
                     baseLoop.stop();
                     tenorLoop.stop();   
                 }
+                message = '0\n';
+                port.write(message);
             }   
         }
     }
