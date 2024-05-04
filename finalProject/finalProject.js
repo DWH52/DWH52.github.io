@@ -209,7 +209,7 @@ function setup()
 function draw()
 {   
     clear();
-    console.log(frameCount);
+    //console.log(frameCount);
     if(frameCount % 60 == 0)
     {
         port.clear();
@@ -272,7 +272,7 @@ function draw()
         timeElapsed = 0;
         gameCount = 0;
         Tone.Transport.bpm.value = 100;
-        console.log(sw);
+        //console.log(sw);
         if(previousSW - sw != 0 && sw == 1)
         {
             buttonPressed();   
@@ -383,7 +383,7 @@ function game(values)
     }
     //console.log("Player Character X: " + playerCharacter.x);
     //console.log("Player Character Y: " + playerCharacter.y);
-    console.log(sw);
+    //console.log(sw);
     if(previousSW - sw != 0 && sw == 1)
     {
         buttonPressed();   
