@@ -6,3 +6,9 @@ html, body {
   canvas {
     display: block;
   }
+
+  .image-section{
+    display: table-cell;
+    vertical-align: middle;
+    background-color: black;
+  }
