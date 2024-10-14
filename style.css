@@ -6,6 +6,7 @@ body {
     margin: 0;
     padding: 0;
     line-height: 1.6;
+    
 }
 
 /* Styling for the main header */
@@ -26,7 +27,7 @@ h2, h3 {
 /* Unordered list styling */
 li {
     list-style-type: none; /* Remove bullets */
-    margin: 10px 0;
+    margin: 10px 40px;
     padding: 0;
 }
 
